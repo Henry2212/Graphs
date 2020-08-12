@@ -1,47 +1,39 @@
-def earliest_ancestor(ancestors, starting_node):
-    pass
-    # set up graph of children -> parents
-    lookup = {}
-    for pair in ancestors:
-        if pair[1] not in lookup:
-            lookup[pair[1]] = [pair[0]]
+class Queue():
+    def __init__(self):
+        self.queue = []
+    def enqueue(self, value):
+        self.queue.append(value)
+    def dequeue(self):
+        if self.size() > 0:
+            return self.queue.pop(0)
         else:
-            lookup[pair[1]].append(pair[0])
-    # print(lookup)
-    # DFT through the nodes to get to the last generation
-    def recurse(graph, vertex):
-            # endpoints: nowhere left to go
-            # print(vertex)
-            if vertex not in graph:
-                return (1, vertex)
-            # work: do nothing
-            # recurse: get results of recursing
-            results = []
-            for val in graph[vertex]:
-                results.append(recurse(graph, val))
-            # print(results)
-            # get oldest ancestor otherwise smallest ID, pass it on
+            return None
+    def size(self):
+        return len(self.queue)
 
-            # only one ancestor
-            if len(results) == 1:
-                return (results[0][0] + 1, results[0][1])
+def earliest_ancestor(ancestors, starting_node):
+    queue = Queue()
+    current = starting_node
+    neighbors = {}
 
-            # two ancestors, compare them
-            if results[0][0] > results[1][0]:
-                return (results[0][0] + 1, results[0][1])
-            elif results[0][0] < results[1][0]:
-                return (results[1][0] + 1, results[1][1])
-            else:
-                # same age, return lowest ID
-                if results[0][1] < results[1][1]:
-                    return (results[0][0] + 1, results[0][1])
-                else:
-                    return (results[1][0] + 1, results[1][1])
+    for node in ancestors:
+        if node[1] not in neighbors:
+            neighbors[node[1]] = set()
+        neighbors[node[1]].add(node[0])
 
-    # get earliest ancestor and deal with cases where
-    # the one picked is the earliest ancestor
-    earliest = recurse(lookup, starting_node)
-    if earliest[0] == 1:
+ # Early exit if the starting node has no parents
+    if starting_node not in neighbors:
         return -1
     else:
-        return earliest[1]
+        queue.enqueue(neighbors[current])
+
+    while True:
+    #removes and returns 
+        n = queue.dequeue()
+        #lowest number
+        current_node = min(n)
+
+        if current_node in neighbors:
+            queue.enqueue(neighbors[current_node])
+        else:
+            return current_node
