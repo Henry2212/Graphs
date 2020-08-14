@@ -28,7 +28,7 @@ def earliest_ancestor(ancestors, starting_node):
         queue.enqueue(neighbors[current])
 
     while True:
-    #removes and returns 
+    #removes 1st value and returns 
         n = queue.dequeue()
         #lowest number
         current_node = min(n)
